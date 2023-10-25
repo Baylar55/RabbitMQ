@@ -8,18 +8,20 @@ using IConnection connection = factory.CreateConnection();
 using IModel channel = connection.CreateModel();
 
 channel.ExchangeDeclare(
-    exchange: "fanout-exchange-example",
-    type: ExchangeType.Fanout);
+    exchange: "topic-exchange-example",
+    type: ExchangeType.Topic
+    );
 
-for (int i = 0; i < 100; i++)
+for (int i = 0; i < 30; i++)
 {
-    await Task.Delay(200);
     byte[] message = Encoding.UTF8.GetBytes($"Hello World {i}");
-
+    Console.Write("Specify the topic format in which the message should be sent: ");
+    string topic = Console.ReadLine();
     channel.BasicPublish(
-        exchange: "fanout-exchange-example",
-        routingKey: string.Empty,
-        body: message);
+        exchange: "topic-exchange-example",
+        routingKey: topic,
+        body: message
+        );
 }
 
 Console.Read();
